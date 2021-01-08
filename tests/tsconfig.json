@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es2017",
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "../dist",
+    "baseUrl": ".",
+    "removeComments": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "paths": {
+      "@config/*": ["../src/config/*"],
+      "@controllers/*": ["../src/controllers/*"],
+      "@core/*": ["../src/core/*"],
+      "@helpers/*": ["../src/helpers/*"],
+      "@middlewares/*": ["../src/middlewares/*"],
+      "@models/*": ["../src/models/*"],
+      "@plugins/*": ["../src/plugins/*"],
+      "@templates/*": ["../src/templates/*"],
+      "@tests/*": ["./*"],
+      "*": [
+        "../node_modules/*",
+        "../src/types/*"
+      ]
+    }
+  },
+  "include": [
+    "../src/**/*",
+    "./**/*",
+    "../app.ts"
+  ]
+}

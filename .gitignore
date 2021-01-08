@@ -1,0 +1,14 @@
+/node_modules
+/public
+/dist
+.env
+.idea
+.yarnrc
+tests/coverage
+tests/html
+tests/report
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log
+package-lock.json
+report.xml

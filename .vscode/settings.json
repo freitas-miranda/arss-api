@@ -1,0 +1,24 @@
+{
+  "mocha.subdirectory": "/",
+  "mocha.files.glob": "tests/**/*test.ts",
+  "editor.tabSize": 2,
+  "editor.rulers": [100, 110, 120],
+  "mocha.requires": [
+    "ts-node/register",
+    "module-alias/register",
+    "./app.ts"
+  ],
+  "mocha.options": {
+    "compilers": {
+      "ts": "ts-node/register"
+    }
+  },
+  "mocha.env": {
+    "TS_NODE_PROJECT": "tests/tsconfig.json"
+  },
+  "mocha.files.ignore": [
+    "client/**/*",
+    "**/node_modules/**/*"
+  ],
+  "git.ignoreLimitWarning": true,
+}

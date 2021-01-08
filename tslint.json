@@ -1,0 +1,85 @@
+{
+  "rulesDirectory": ["tslint-microsoft-contrib"],
+  "rules": {
+    "await-promise": [true, "Bluebird"],
+    "class-name": true,
+    "comment-format": [
+      true,
+      "check-space"
+    ],
+    "eofline": true,
+    "file-name-casing": [true, "snake-case"],
+    "function-name": [
+      true, {
+        "method-regex": "^[a-z][\\w\\d]+$",
+        "private-method-regex": "^[a-z][\\w\\d]+$",
+        "protected-method-regex": "^[a-z][\\w\\d]+$",
+        "static-method-regex": "^[a-z][\\w\\d]+$",
+        "function-regex": "^[a-zA-Z][\\w\\d]+$"
+      }
+    ],
+    "indent": [true, "spaces", 2],
+    "jsdoc-format": true,
+    "no-consecutive-blank-lines": true,
+    "no-duplicate-imports": true,
+    "no-duplicate-super": true,
+    "no-internal-module": true,
+    "no-irregular-whitespace": true,
+    "no-return-await": true,
+    "no-trailing-whitespace": true,
+    "no-var-keyword": true,
+    "one-line": [
+      true,
+      "check-open-brace",
+      "check-whitespace"
+    ],
+    "ordered-imports": [
+      true,
+      {
+        "import-sources-order": "lowercase-first",
+        "named-imports-order": "lowercase-first"
+      }
+    ],
+    "promise-function-async": true,
+    "prefer-const": true,
+    "quotemark": [
+      true,
+      "double",
+      "avoid-escape"
+    ],
+    "semicolon": [ true, "always" ],
+    "space-before-function-paren": true,
+    "typedef-whitespace": [
+      true,
+      {
+        "call-signature": "nospace",
+        "index-signature": "nospace",
+        "parameter": "nospace",
+        "property-declaration": "nospace",
+        "variable-declaration": "nospace"
+      },
+      {
+        "call-signature": "onespace",
+        "index-signature": "onespace",
+        "parameter": "onespace",
+        "property-declaration": "onespace",
+        "variable-declaration": "onespace"
+      }
+    ],
+    "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case", "allow-leading-underscore"],
+    "whitespace": [
+      true,
+      "check-branch",
+      "check-decl",
+      "check-operator",
+      "check-module",
+      "check-separator",
+      "check-type"
+    ]
+  },
+  "linterOptions": {
+    "exclude": [
+      "node_modules/**"
+    ]
+  }
+}

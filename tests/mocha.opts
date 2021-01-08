@@ -1,0 +1,10 @@
+# mocha.opts
+--exit
+--colors
+--reporter mocha-jenkins-reporter
+--ui bdd
+--timeout 15000
+--require module-alias/register
+--require ts-node/register
+--file app.ts
+tests/specs/**/*.test.ts --recursive

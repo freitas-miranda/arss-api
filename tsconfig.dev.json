@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "removeComments": false,
+    "sourceMap": true
+  }
+}
