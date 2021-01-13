@@ -25,6 +25,20 @@ export class Session {
   }
 
   static middleware (req: Request, res: Response, next: NextFunction) {
+    if (process.env.NODE_ENV === "production") {
+      const userAgent: any = <string>req.headers["user-agent"].split("/")[0];
+      const blackList: any = [
+        "axios",
+        "Dart",
+        "PostmanRuntime",
+        "Embarcadero RESTClient"
+      ];
+
+      if (blackList.indexOf(userAgent) !== -1) {
+        return res.json({ erro: "Blocked user agent!" });
+      }
+    }
+
     Session.instance.namespace.bindEmitter(req);
     Session.instance.namespace.bindEmitter(res);
 

@@ -21,7 +21,6 @@ class Api extends Controller {
       descricao: description,
       versao: version,
       database: await this.checkBancoEstoque(),
-      internet: await this.isConnected(),
       status: true,
       data_vm: time,
       iniciado: (<any>global).timeStart
@@ -30,7 +29,7 @@ class Api extends Controller {
 
   private async checkBancoEstoque (): Promise<boolean> {
     try {
-      await this.select(`select grupo from opcao where grupo = 1`);
+      await this.select(`select id from usuario where id = 1`);
       return true;
     } catch (e) {
       return e.message;

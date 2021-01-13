@@ -86,7 +86,7 @@ export default function (sequelize: Sequelize, softDeleteOptions?: SoftDeleteOpt
     value[softDeleteOptions.deletedAt] = literal("NOW()");
 
     if (softDeleteOptions.deletedBy) {
-      value[(<any>softDeleteOptions.deletedBy).field] = (<any>global).login;
+      value[(<any>softDeleteOptions.deletedBy).field] = (<any>softDeleteOptions.deletedBy).defaultValue();
     }
 
     return constructor.QueryInterface.update(
@@ -197,7 +197,7 @@ export default function (sequelize: Sequelize, softDeleteOptions?: SoftDeleteOpt
         value[softDeleteOptions.deletedAt] = literal("NOW()");
 
         if (softDeleteOptions.deletedBy) {
-          value[(<any>softDeleteOptions.deletedBy).field] = (<any>global).login;
+          value[(<any>softDeleteOptions.deletedBy).field] = (<any>softDeleteOptions.deletedBy).defaultValue();
         }
 
         return this.QueryInterface.bulkUpdate(this.getTableName(options), value, options.where, options, this.rawAttributes);

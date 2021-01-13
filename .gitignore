@@ -1,9 +1,8 @@
 /node_modules
-/public
 /dist
 .env
+.vscode
 .idea
-.yarnrc
 tests/coverage
 tests/html
 tests/report
@@ -12,3 +11,4 @@ yarn-debug.log*
 yarn-error.log
 package-lock.json
 report.xml
+/public

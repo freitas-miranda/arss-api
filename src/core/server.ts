@@ -1,3 +1,4 @@
+import Auth from "@core/access_control/auth";
 import Database from "@core/database";
 import routeExplorer from "@core/routing/route_explorer";
 import Session from "@core/session";
@@ -10,6 +11,7 @@ import fs from "fs";
 import helmet from "helmet";
 import http from "http";
 import moment from "moment";
+import passport from "passport";
 import path from "path";
 
 export class Server {
@@ -26,6 +28,7 @@ export class Server {
 
     this.version = this.getVersion();
 
+    Auth.init();
     Session.init();
   }
 
@@ -46,6 +49,9 @@ export class Server {
 
     this.express.use(bodyParser.urlencoded({ extended: false }));
     this.express.use(bodyParser.json());
+
+    this.express.use(passport.initialize());
+    this.express.use(passport.session());
   }
 
   private static () {

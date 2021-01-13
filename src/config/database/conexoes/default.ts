@@ -1,16 +1,25 @@
 import config from "@config/database/config";
+import { Auth } from "@core/access_control";
 import IDbConnection from "@core/database/idb_connection";
 import sequelizeSoftDelete from "@plugins/sequelize/soft_delete";
 import sequelizeTimestamp from "@plugins/sequelize/timestamp";
 import { Sequelize, SequelizeOptions } from "sequelize-typescript";
 
-class DbLocal implements IDbConnection {
+class ConDefault implements IDbConnection {
   alias: string;
   connection: Sequelize;
   options: SequelizeOptions;
 
   constructor () {
     this.options = config.default;
+  }
+
+  private usuario (): string | undefined {
+    if (Auth.authenticated())
+      return Auth.user.login;
+    else {
+      if (process.env.NODE_ENV !== "test") console.error("Falha ao obter usuário de auditoria!");
+    }
   }
 
   async config (): Promise<void> {
@@ -20,11 +29,14 @@ class DbLocal implements IDbConnection {
     sequelizeSoftDelete(this.connection, {
       deleted: { field: "deleted_at", defaultValue: null, deletedValue: "*"},
       deletedAt: "deleted_at",
-      deletedBy: { field: "deleted_by" }
+      deletedBy: { field: "deleted_by", defaultValue: this.usuario }
     });
 
-    sequelizeTimestamp(this.connection, { });
+    sequelizeTimestamp(this.connection, {
+      createdBy: { defaultValue: this.usuario },
+      updatedBy: { defaultValue: this.usuario }
+    });
   }
 }
 
-export default DbLocal;
+export default ConDefault;

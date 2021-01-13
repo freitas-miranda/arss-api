@@ -27,7 +27,7 @@ export default function (sequelize: Sequelize, timestamp?: TimestampOptions) {
 
     if (timestamp.createdBy) {
       options.fields.push((<any>timestamp.createdBy).field);
-      instance.setDataValue((<any>timestamp.createdBy).field, ((<any>global).login).defaultValue());
+      instance.setDataValue((<any>timestamp.createdBy).field, (<any>instance).createdByRaw || (<any>timestamp.createdBy).defaultValue());
     }
   });
 
@@ -37,7 +37,7 @@ export default function (sequelize: Sequelize, timestamp?: TimestampOptions) {
 
     if (timestamp.updatedBy) {
       options.fields.push((<any>timestamp.updatedBy).field);
-      instance.setDataValue((<any>timestamp.updatedBy).field, ((<any>global).login).defaultValue());
+      instance.setDataValue((<any>timestamp.updatedBy).field, (<any>instance).updatedByRaw || (<any>timestamp.updatedBy).defaultValue());
     }
   });
 

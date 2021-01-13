@@ -1,6 +1,6 @@
 module.exports = {
   apps : [{
-    name: 'arss',
+    name: 'arss-api',
     script: 'dist/app.js',
     instances: 4,
     autorestart: true,
@@ -17,8 +17,8 @@ module.exports = {
   deploy : {
     production : {
       user: 'node',
-      host: '212.83.163.1',
-      ref: 'origin/master',
+      host: 'localhost',
+      ref: 'origin/production',
       repo: 'git@github.com:freitas-miranda/arss-api.git'
     }
   }
