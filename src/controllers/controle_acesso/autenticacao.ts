@@ -21,7 +21,7 @@ class AutenticacaoController extends Controller {
   private validacaoAlterarSenha: object;
 
   constructor () {
-    super();
+    super("Autenticação");
 
     this.validacaoLogin = {
       email: {

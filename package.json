@@ -9,12 +9,9 @@
     "dev": "concurrently \"yarn watch-ts -p tsconfig.dev.json\" \"yarn watch-node\"",
     "build": "rm -rf dist && yarn install && tsc -p tsconfig.json",
     "build-win": "rd /s /q dist && yarn install && tsc -p tsconfig.json",
-    "build-test": "rm -rf dist && yarn install && tsc -p tests/tsconfig.json",
     "start": "node dist/app.js",
     "lint": "tslint -c tslint.json -p tests/tsconfig.json",
     "l": "yarn && yarn lint && yarn build-win",
-    "test": "SET TS_NODE_PROJECT=tests/tsconfig.json&& yarn build-test && mocha --opts tests/mocha.opts",
-    "test-jenkins": "mocha --opts tests/mocha.opts",
     "watch-node": "nodemon dist/app",
     "watch-ts": "tsc -w"
   },

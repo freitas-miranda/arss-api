@@ -18,7 +18,7 @@ class ConDefault implements IDbConnection {
     if (Auth.authenticated())
       return Auth.user.login;
     else {
-      if (process.env.NODE_ENV !== "test") console.error("Falha ao obter usuário de auditoria!");
+      return "SISTEMA_ARSS";
     }
   }
 

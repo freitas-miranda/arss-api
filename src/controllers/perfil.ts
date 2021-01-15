@@ -15,7 +15,7 @@ class PerfilController extends Controller {
   private validacaoSenha: object;
 
   constructor () {
-    super();
+    super("Perfil");
 
     this.validacao = {
       nome: { presence: { allowEmpty: false, message: "não informado!" } },

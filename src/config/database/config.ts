@@ -10,7 +10,10 @@ export default {
     host: process.env.DB_HOST,
     logging: (process.env.APP_DEBUG === "true") ? console.log : false,
     timezone: process.env.APP_TIMEZONE,
-    modelPaths: [path.join(__dirname, "../../models")],
+    modelPaths: [
+      path.join(__dirname, "../../models"),
+      path.join(__dirname, "../../models/sistema")
+    ],
     define: {
       timestamps: false,
       underscored: true,
