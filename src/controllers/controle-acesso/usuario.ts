@@ -1,11 +1,11 @@
 import Controller from "@controllers/controller";
 import { Authentication, Delete, Get, Post, Put, Route } from "@core/routing/controller";
-import Usuario from "@models/sistema/usuario";
+import Usuario from "@models/usuario";
 import { Request, Response } from "express";
 import { Op } from "sequelize";
 import validate from "validate.js";
 
-@Route("/api/sistema/usuario")
+@Route("/api/controle-acesso/usuario")
 export class UsuarioController extends Controller {
   private readonly validacaoSalvar: any;
   private readonly validacaoEditar: any;

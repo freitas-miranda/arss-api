@@ -1,9 +1,9 @@
-import SequelizeModel from "@core/database/model";
 import {
   AllowNull,
   AutoIncrement,
   Column,
   DataType,
+  Model,
   PrimaryKey,
   Table
 } from "sequelize-typescript";
@@ -14,25 +14,31 @@ export const enum UsuarioAtivo {
 }
 
 @Table({ tableName: "usuario" })
-class Usuario extends SequelizeModel<Usuario> {
+class Usuario extends Model<Usuario> {
 
   @AutoIncrement
   @PrimaryKey
   @Column
   id: number;
 
-  @Column
-  ativo: number;
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  nome: string;
 
   @AllowNull(false)
   @Column(DataType.STRING)
   email: string;
 
   @Column(DataType.STRING)
-  nome: string;
-
-  @Column(DataType.STRING)
   senha: string;
+
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  ativo: number;
+
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  perfilAcessoId: number;
 
 }
 

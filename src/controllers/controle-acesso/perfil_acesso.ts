@@ -1,11 +1,11 @@
 import Controller from "@controllers/controller";
 import { Authentication, Delete, Get, Post, Put, Route } from "@core/routing/controller";
-import Perfil from "@models/sistema/perfil";
+import Perfil from "@models/perfil";
 import { Request, Response } from "express";
 import { Op } from "sequelize";
 import validate from "validate.js";
 
-@Route("/api/sistema/perfil-acesso")
+@Route("/api/controle-acesso/perfil-acesso")
 export class PerfilAcessoController extends Controller {
   private readonly validacaoSalvar: any;
   private readonly validacaoEditar: any;

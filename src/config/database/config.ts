@@ -12,7 +12,6 @@ export default {
     timezone: process.env.APP_TIMEZONE,
     modelPaths: [
       path.join(__dirname, "../../models"),
-      path.join(__dirname, "../../models/sistema")
     ],
     define: {
       timestamps: false,
