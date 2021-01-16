@@ -1,4 +1,4 @@
-import Pessoa from "@models/usuario";
+import Pessoa from "@models/pessoa";
 
 import {
   AllowNull,
