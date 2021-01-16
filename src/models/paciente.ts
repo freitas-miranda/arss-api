@@ -3,6 +3,7 @@ import Pessoa from "@models/pessoa";
 import {
   AllowNull,
   AutoIncrement,
+  BelongsTo,
   Column,
   DataType,
   ForeignKey,
@@ -37,6 +38,9 @@ class Paciente extends Model<Paciente> {
 
   @Column(DataType.FLOAT)
   altura: number;
+
+  @BelongsTo(() => Pessoa)
+  pessoa: Pessoa;
 }
 
 export default Paciente;

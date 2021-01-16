@@ -4,6 +4,7 @@ import Pessoa from "@models/pessoa";
 import {
   AllowNull,
   AutoIncrement,
+  BelongsTo,
   Column,
   ForeignKey,
   Model,
@@ -29,6 +30,11 @@ class PessoaEmail extends Model<PessoaEmail> {
   @Column
   emailId: number;
 
+  @BelongsTo(() => Pessoa)
+  pessoa: Pessoa;
+
+  @BelongsTo(() => Email)
+  email: Email;
 }
 
 export default PessoaEmail;

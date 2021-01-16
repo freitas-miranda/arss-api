@@ -4,6 +4,7 @@ import { Moment } from "moment";
 import {
   AllowNull,
   AutoIncrement,
+  BelongsTo,
   Column,
   DataType,
   ForeignKey,
@@ -35,6 +36,8 @@ class Pessoa extends Model<Pessoa> {
   @Column
   usuarioId: number;
 
+  @BelongsTo(() => Usuario)
+  usuario: Usuario;
 }
 
 export default Pessoa;

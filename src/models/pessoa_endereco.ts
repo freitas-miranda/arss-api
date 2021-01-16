@@ -4,6 +4,7 @@ import Pessoa from "@models/pessoa";
 import {
   AllowNull,
   AutoIncrement,
+  BelongsTo,
   Column,
   ForeignKey,
   Model,
@@ -29,6 +30,11 @@ class PessoaEndereco extends Model<PessoaEndereco> {
   @Column
   enderecoId: number;
 
+  @BelongsTo(() => Pessoa)
+  pessoa: Pessoa;
+
+  @BelongsTo(() => Endereco)
+  endereco: Endereco;
 }
 
 export default PessoaEndereco;

@@ -4,6 +4,7 @@ import Telefone from "@models/telefone";
 import {
   AllowNull,
   AutoIncrement,
+  BelongsTo,
   Column,
   ForeignKey,
   Model,
@@ -29,6 +30,11 @@ class PessoaTelefone extends Model<PessoaTelefone> {
   @Column
   telefoneId: number;
 
+  @BelongsTo(() => Pessoa)
+  pessoa: Pessoa;
+
+  @BelongsTo(() => Telefone)
+  telefone: Telefone;
 }
 
 export default PessoaTelefone;
