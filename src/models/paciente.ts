@@ -25,11 +25,9 @@ class Paciente extends Model<Paciente> {
   @Column
   pessoaId: number;
 
-  @AllowNull(false)
   @Column(DataType.STRING)
   cartaoSus: string;
 
-  @AllowNull(false)
   @Column(DataType.STRING)
   tipoSanguineo: string;
 

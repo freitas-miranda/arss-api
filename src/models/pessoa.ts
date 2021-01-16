@@ -29,8 +29,13 @@ class Pessoa extends Model<Pessoa> {
   @Column(DataType.STRING)
   cpf: string;
 
+  @AllowNull(false)
   @Column(DataType.DATE)
   dataNascimento: Moment;
+
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  sexo: string;
 
   @ForeignKey(() => Usuario)
   @Column
