@@ -61,7 +61,10 @@ export class UsuarioController extends Controller {
 
     let sql: string = ``;
 
+    if (params.codigo) sql += ` AND u.id = ${params.codigo}`;
+    if (params.nome) sql += ` AND u.nome LIKE '%${params.nome}%'`;
     if (params.email) sql += ` AND u.email LIKE '%${params.email}%'`;
+    if (params.perfil) sql += ` AND pa.descricao LIKE '%${params.perfil}%'`;
     if (params.ativo) sql += ` AND u.ativo = ${params.ativo}`;
 
     return sql;
@@ -75,8 +78,11 @@ export class UsuarioController extends Controller {
         SELECT u.id
              , u.nome
              , u.email
+             , pa.descricao as perfil
              , IF(u.ativo = 1, 'SIM', 'NÃO') AS ativo
           FROM usuario AS u
+         INNER JOIN perfil_acesso AS pa
+            ON pa.id = u.perfil_acesso_id
          WHERE u.deleted_at IS NULL`;
 
       sql += await this.filtroPesquisa(req.query);
