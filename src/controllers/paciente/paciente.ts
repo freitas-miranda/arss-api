@@ -127,8 +127,11 @@ export class PacienteController extends Controller {
 
       const existente = await Paciente.findOne({
         where: {
-          cpf: req.body.cpf
-        }
+          "$pessoa.cpf$": req.body.cpf
+        },
+        include: [
+          { model: Pessoa, as: Pessoa.tableName}
+        ]
       });
 
       if (existente) {
