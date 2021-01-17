@@ -4,9 +4,9 @@ import HelperAutorizacao from "@helpers/autorizacao";
 import HelperEmail from "@helpers/email";
 import HelperErros from "@helpers/erros";
 import HelperMensagens from "@helpers/mensagens";
+import Opcoes from "@models/opcao_item";
 import Usuario from "@models/usuario";
 import { Op, QueryTypes } from "sequelize";
-
 export class Controller extends BaseController {
   protected readonly autorizacao: HelperAutorizacao;
   protected readonly email: HelperEmail;
@@ -79,6 +79,15 @@ export class Controller extends BaseController {
     });
     return query;
   }
+
+  protected async opcoes (opcaoId: number): Promise<any> {
+    return  Opcoes.findAll({
+      attributes: ["codigo", "descricao"],
+      where: { opcaoId: opcaoId },
+      order: [["ordem", "asc" ]]
+    });
+  }
+
 }
 
 export default Controller;

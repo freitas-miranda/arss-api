@@ -1,5 +1,6 @@
 import Controller from "@controllers/controller";
 import { Authentication, Delete, Get, Post, Put, Route } from "@core/routing/controller";
+import { grupo } from "@models/opcao_item";
 import Paciente from "@models/paciente";
 import Pessoa from "@models/pessoa";
 import { Request, Response } from "express";
@@ -37,6 +38,19 @@ export class PacienteController extends Controller {
       },
       ...this.validacaoSalvar,
     };
+  }
+
+  @Get("/dropdown")
+  async dropdown (_req: Request, res: Response): Promise<Response> {
+    try {
+      return res.json({
+        sexo: await this.opcoes(grupo.sexo),
+        tipoSanguineo: await this.opcoes(grupo.tipoSanguineo),
+        tipoTelefone: await this.opcoes(grupo.tipoTelefone),
+      });
+    } catch (e) {
+      return res.status(500).json({ erro: e.message });
+    }
   }
 
   private async filtroPesquisa (params: any): Promise<string> {
@@ -93,6 +107,7 @@ export class PacienteController extends Controller {
              , pa.tipo_sanguineo as tipoSanguineo
              , pa.peso
              , pa.altura
+             , pe.id as pessoaId
           FROM paciente AS pa
          INNER JOIN pessoa AS pe
             ON pe.id = pa.pessoa_id
@@ -184,30 +199,26 @@ export class PacienteController extends Controller {
   async editar (req: Request, res: Response): Promise<any> {
     try {
       const erro = validate(req.body, this.validacaoEditar);
+      if (erro) return res.status(500).json({ erro });
 
-      if (erro) {
-        return res.status(500).json({ erro });
-      }
+      const paciente = await Paciente.findByPk(req.body.id);
+      if (!paciente) this.erro.naoEncontradoParaEditar();
+      paciente.cartaoSus = req.body.cartaoSus;
+      paciente.tipoSanguineo = req.body.tipoSanguineo;
+      paciente.peso = req.body.peso;
+      paciente.altura = req.body.altura;
 
-      const reg = await Paciente.findByPk(req.body.id);
+      const pessoa = await Pessoa.findByPk(req.body.pessoaId);
+      pessoa.nome = req.body.nome;
+      pessoa.cpf = req.body.cpf;
+      pessoa.dataNascimento = req.body.dataNascimento;
+      pessoa.sexo = req.body.sexo;
 
-      if (!reg) {
-        this.erro.naoEncontradoParaEditar();
-      }
-
-      reg.pessoa.nome = req.body.nome;
-      reg.pessoa.cpf = req.body.cpf;
-      reg.pessoa.dataNascimento = req.body.dataNascimento;
-      reg.pessoa.sexo = req.body.sexo;
-      reg.cartaoSus = req.body.cartaoSus;
-      reg.tipoSanguineo = req.body.tipoSanguineo;
-      reg.peso = req.body.peso;
-      reg.altura = req.body.altura;
-
-      await reg.save();
+      await paciente.save();
+      await pessoa.save();
 
       return res.json({
-        id: reg.id,
+        id: paciente.id,
         mensagem: this.msg.sucessoAoEditar()
       });
     } catch (e) {
