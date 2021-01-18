@@ -1,4 +1,6 @@
 import Helper from "@base/helper";
+import Email from "@models/email";
+import PessoaEmail from "@models/pessoa_email";
 import PessoaTelefone from "@models/pessoa_telefone";
 import Telefone from "@models/telefone";
 
@@ -66,9 +68,62 @@ class HelperPessoa extends Helper {
     return {
       telefoneId: telefoneNovo.id,
       pessoaTelefoneId: relacionamentoNovo.id
+    };
+  }
+
+  private async emailAtual (pessoaEmailId: any): Promise<any> {
+    return this.dbOperacoes.selectRow(`
+      SELECT pessoa_email.id as relacionamentoId
+           , pessoa_email.email_id as emailId
+           , pessoa_email.pessoa_id as pessoaId
+           , email.email
+        FROM pessoa_email
+       INNER JOIN email
+          ON email.deleted_at IS NULL
+         AND email.id = pessoa_email.email_id
+       WHERE pessoa_email.id = :pessoaEmailId;
+    `, {
+      replacements: {
+        pessoaEmailId: pessoaEmailId,
+    }});
+  }
+
+  async atualizarEmail (email: any): Promise<any> {
+    if (!email.email) return;
+
+    // Se já possui email cadastrado
+    if (email.pessoaEmailId) {
+      const emailAtual = await this.emailAtual(email.pessoaEmailId);
+
+      // Sem alteração no email!
+      if (emailAtual.email == email.email) return;
+
+      // Remover relacionamento antigo
+      const relacionamentoAntigo = await PessoaEmail.findByPk(emailAtual.relacionamentoId);
+      await relacionamentoAntigo.destroy({ transaction: this.tr });
+
+      // Remover email antigo
+      const emailAntigo = await Email.findByPk(emailAtual.emailId);
+      await emailAntigo.destroy({ transaction: this.tr });
     }
 
+    // Registrar um novo email
+    const emailNovo = await Email.create({
+      email: email.email
+    }, { transaction: this.tr });
+
+    // Relacionar o novo email
+    const relacionamentoNovo =  await PessoaEmail.create({
+      pessoaId: this.pessoaId,
+      emailId: emailNovo.id
+    }, { transaction: this.tr });
+
+    return {
+      emailId: emailNovo.id,
+      pessoaEmailId: relacionamentoNovo.id
+    };
   }
+
 }
 
 export default HelperPessoa;

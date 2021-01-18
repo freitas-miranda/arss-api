@@ -112,9 +112,12 @@ export class PacienteController extends Controller {
              , paciente.tipo_sanguineo as tipoSanguineo
              , paciente.peso
              , paciente.altura
+             , pessoa_endereco.id as pessoaEnderecoId
              , pessoa_telefone.id as pessoaTelefoneId
              , CONCAT(telefone.ddd, telefone.numero) as telefoneNumero
              , telefone.tipo as telefoneTipo
+             , pessoa_email.id as pessoaEmailId
+             , email
           FROM paciente
          INNER JOIN pessoa
             ON pessoa.id = paciente.pessoa_id
@@ -180,6 +183,7 @@ export class PacienteController extends Controller {
       const dataNascimento = req.body.dataNascimento;
       const sexo = req.body.sexo;
       const telefone = req.body.telefone;
+      const email = req.body.email;
 
       delete req.body.nome;
       delete req.body.cpf;
@@ -224,7 +228,7 @@ export class PacienteController extends Controller {
         const helper = new HelperPessoa(pessoaId, t);
         // helper.atualizarEndereco(endereco);
         await helper.atualizarTelefone(telefone);
-        // helper.atualizarEmail(email);
+        await helper.atualizarEmail(email);
       });
 
       return res.json({
@@ -243,6 +247,8 @@ export class PacienteController extends Controller {
       const erro = validate(req.body, this.validacaoEditar);
       if (erro) return res.status(500).json({ erro });
 
+      console.log(req.body);
+
       const paciente = await Paciente.findByPk(req.body.id);
       if (!paciente) this.erro.naoEncontradoParaEditar();
       paciente.cartaoSus = req.body.cartaoSus;
@@ -251,7 +257,6 @@ export class PacienteController extends Controller {
       paciente.altura = req.body.altura;
 
       const pessoa = await Pessoa.findByPk(req.body.pessoaId);
-      console.log(pessoa);
       pessoa.nome = req.body.nome;
       pessoa.cpf = req.body.cpf;
       pessoa.dataNascimento = req.body.dataNascimento;
@@ -262,9 +267,9 @@ export class PacienteController extends Controller {
         await pessoa.save({ transaction: t });
 
         const helper = new HelperPessoa(pessoa.id, t);
-        // helper.atualizarEndereco(req.body.telefone);
+        // await helper.atualizarEndereco(req.body.telefone);
         await helper.atualizarTelefone(req.body.telefone);
-        // helper.atualizarEmail();
+        await helper.atualizarEmail(req.body.email);
       });
 
       return res.json({
