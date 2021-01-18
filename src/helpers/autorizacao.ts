@@ -1,4 +1,3 @@
-
 import server from "@config/server";
 import pathtoRegexp from "path-to-regexp";
 import { QueryTypes } from "sequelize";

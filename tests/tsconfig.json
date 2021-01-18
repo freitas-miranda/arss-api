@@ -17,6 +17,7 @@
       "@config/*": ["../src/config/*"],
       "@controllers/*": ["../src/controllers/*"],
       "@core/*": ["../src/core/*"],
+      "@database/*": ["../src/database/*"],
       "@helpers/*": ["../src/helpers/*"],
       "@middlewares/*": ["../src/middlewares/*"],
       "@models/*": ["../src/models/*"],

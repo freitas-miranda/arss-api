@@ -15,8 +15,12 @@ class ConDefault implements IDbConnection {
   }
 
   private usuario (): string | undefined {
-    if (Auth.authenticated())
-      return Auth.user.login;
+    if (Auth.authenticated()) {
+      if (Auth.user.email)
+        return Auth.user.email.slice(0, 45);
+      else
+        return "SISTEMA_ARSS";
+    }
     else {
       return "SISTEMA_ARSS";
     }

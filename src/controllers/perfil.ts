@@ -1,4 +1,4 @@
-import Controller from "@controllers/controller";
+import Controller from "@base/controller";
 import { Authentication, Get, Post, Route } from "@core/routing/controller";
 import EmailConfirmacao, { EmailConfirmacaoAtivo } from "@models/email_confirmacao";
 import Usuario from "@models/usuario";

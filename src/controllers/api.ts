@@ -1,4 +1,4 @@
-import Controller from "@controllers/controller";
+import Controller from "@base/controller";
 import { Get, Route } from "@core/routing/controller";
 import { Request, Response } from "express";
 import moment from "moment";

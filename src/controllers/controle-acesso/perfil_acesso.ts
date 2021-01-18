@@ -1,4 +1,4 @@
-import Controller from "@controllers/controller";
+import Controller from "@base/controller";
 import { Authentication, Delete, Get, Post, Put, Route } from "@core/routing/controller";
 import Perfil from "@models/perfil";
 import { Request, Response } from "express";

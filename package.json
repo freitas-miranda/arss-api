@@ -78,9 +78,11 @@
     "typescript": "^3.3.3333"
   },
   "_moduleAliases": {
+    "@base": "dist/src/base",
     "@config": "dist/src/config",
     "@controllers": "dist/src/controllers",
     "@core": "dist/src/core",
+    "@database": "dist/src/database",
     "@helpers": "dist/src/helpers",
     "@middlewares": "dist/src/middlewares",
     "@models": "dist/src/models",

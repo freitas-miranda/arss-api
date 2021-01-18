@@ -1,5 +1,6 @@
 import { Auth } from "@core/access_control";
 import BaseController from "@core/routing/controller";
+import DbOperacoes from "@database/operacoes";
 import HelperAutorizacao from "@helpers/autorizacao";
 import HelperEmail from "@helpers/email";
 import HelperErros from "@helpers/erros";
@@ -7,12 +8,14 @@ import HelperMensagens from "@helpers/mensagens";
 import Opcoes from "@models/opcao_item";
 import Usuario from "@models/usuario";
 import { Op, QueryTypes } from "sequelize";
+
 export class Controller extends BaseController {
   protected readonly autorizacao: HelperAutorizacao;
   protected readonly email: HelperEmail;
   private name: string;
   protected erro: HelperErros;
   protected msg: HelperMensagens;
+  protected dbOperacoes: DbOperacoes;
 
   constructor (nomeController: string) {
     super();
@@ -22,6 +25,7 @@ export class Controller extends BaseController {
     this.erro = new HelperErros(this.msg);
     this.autorizacao = new HelperAutorizacao();
     this.email = new HelperEmail();
+    this.dbOperacoes = new DbOperacoes();
   }
 
   protected async allowed (auth?: any, rule?: number): Promise<boolean> {

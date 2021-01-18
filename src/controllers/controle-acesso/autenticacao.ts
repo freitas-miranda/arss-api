@@ -1,4 +1,4 @@
-import Controller from "@controllers/controller";
+import Controller from "@base/controller";
 import { Auth, TokenManager } from "@core/access_control";
 import { Authentication, Get, Post, Route } from "@core/routing/controller";
 import RecuperacaoSenha, { RecuperacaoSenhaAtivo } from "@models/recuperacao_senha";
