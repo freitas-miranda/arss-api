@@ -161,10 +161,8 @@ export class PacienteController extends Controller {
   async salvar (req: Request, res: Response): Promise<any> {
     try {
       const erro = validate(req.body, this.validacaoSalvar);
+      if (erro) return res.status(500).json({ erro });
 
-      if (erro) {
-        return res.status(500).json({ erro });
-      }
 
       const existente = await Paciente.findOne({
         where: {
@@ -183,7 +181,7 @@ export class PacienteController extends Controller {
       const cpf = req.body.cpf;
       const dataNascimento = req.body.dataNascimento;
       const sexo = req.body.sexo;
-      const numeroTelefone = req.body.telefone;
+      const telefone = req.body.telefone;
 
       delete req.body.nome;
       delete req.body.cpf;
@@ -197,42 +195,38 @@ export class PacienteController extends Controller {
         }
       });
 
-      // Criar Pessoa
-      let pessoaId: number;
-      if (pessoaExistente) {
-        pessoaId = pessoaExistente.id;
-      } else {
-        const pessoa = Pessoa.build(Object.assign({
-          nome: nome,
-          cpf: cpf,
-          dataNascimento: dataNascimento,
-          sexo: sexo
-        }));
-        await pessoa.save();
-        pessoaId = pessoa.id;
-      }
+      let pessoaId;
+      let pacienteId;
+      await this.db().transaction (async (t: any) => {
 
-      // Criar Paciente
-      const reg = await Paciente.create(Object.assign(req.body, {pessoaId: pessoaId}));
+        // Criar Pessoa
+        if (pessoaExistente) {
+          pessoaId = pessoaExistente.id;
+        } else {
+          const pessoa = await Pessoa.create({
+            nome: nome,
+            cpf: cpf,
+            dataNascimento: dataNascimento,
+            sexo: sexo
+          }, { transaction: t });
+          pessoaId = pessoa.id;
+        }
 
-      // Relacionar telefone com paciente
-      if (numeroTelefone) {
-        const telefone = Telefone.build(Object.assign({
-          ddd: numeroTelefone.slice(0, 2),
-          numero: numeroTelefone,
-          tipo: 1
-        }));
-        await telefone.save();
+        // Criar Paciente
+        const reg = await Paciente.create(
+          Object.assign(req.body, {pessoaId: pessoaId}),
+          { transaction: t }
+        );
+        pacienteId = reg.id;
 
-        const pessoaTelefone = PessoaTelefone.build(Object.assign({
-          pessoaId: pessoaId,
-          telefoneId: telefone.id
-        }));
-        await pessoaTelefone.save();
-      }
+        const helper = new HelperPessoa(pessoaId, t);
+        // helper.atualizarEndereco(endereco);
+        await helper.atualizarTelefone(telefone);
+        // helper.atualizarEmail(email);
+      });
 
       return res.json({
-        id: reg.id,
+        id: pacienteId,
         mensagem: this.msg.sucessoAoSalvar()
       });
     } catch (e) {
