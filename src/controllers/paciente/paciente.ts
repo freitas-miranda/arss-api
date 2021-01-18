@@ -74,7 +74,7 @@ export class PacienteController extends Controller {
         SELECT paciente.id
              , pessoa.cpf
              , pessoa.nome
-             , CONCAT(telefone.ddd, telefone.numero) as telefone
+             , CONCAT(telefone.ddd, telefone.numero) as telefoneNumero
           FROM paciente
          INNER JOIN pessoa
             ON pessoa.id = paciente.pessoa_id
@@ -114,7 +114,8 @@ export class PacienteController extends Controller {
              , paciente.peso
              , paciente.altura
              , pessoa_telefone.id as pessoaTelefoneId
-             , CONCAT(telefone.ddd, telefone.numero) as telefone
+             , CONCAT(telefone.ddd, telefone.numero) as telefoneNumero
+             , telefone.tipo as telefoneTipo
           FROM paciente
          INNER JOIN pessoa
             ON pessoa.id = paciente.pessoa_id

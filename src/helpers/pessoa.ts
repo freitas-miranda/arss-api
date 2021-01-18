@@ -18,6 +18,7 @@ class HelperPessoa extends Helper {
            , pessoa_telefone.telefone_id as telefoneId
            , pessoa_telefone.pessoa_id as pessoaId
            , CONCAT(telefone.ddd, telefone.numero) as numero
+           , telefone.tipo
         FROM pessoa_telefone
        INNER JOIN telefone
           ON telefone.deleted_at IS NULL
@@ -30,23 +31,24 @@ class HelperPessoa extends Helper {
   }
 
   async atualizarTelefone (telefone: any): Promise<any> {
-    if (!telefone) return;
+    if (!telefone.numero) return;
 
-    const telefoneAtual = await this.telefoneAtual(telefone.pessoaTelefoneId);
+    // Se já possui telefone cadastrado
+    if (telefone.pessoaTelefoneId) {
+      const telefoneAtual = await this.telefoneAtual(telefone.pessoaTelefoneId);
 
-    // Não foi alterado
-    if (telefoneAtual.numero == telefone.numero) return;
+      // Sem alteração no telefone!
+      if (telefoneAtual.numero == telefone.numero &&
+          telefoneAtual.tipo == telefone.tipo) return;
 
-    // Atualizar telefone
-    let pessoaTelefoneId;
+      // Remover relacionamento antigo
+      const relacionamentoAntigo = await PessoaTelefone.findByPk(telefoneAtual.relacionamentoId);
+      await relacionamentoAntigo.destroy({ transaction: this.tr });
 
-    // Remover relacionamento antigo
-    const relacionamentoAntigo = await PessoaTelefone.findByPk(telefoneAtual.relacionamentoId);
-    await relacionamentoAntigo.destroy({ transaction: this.tr });
-
-    // Remover telefone antigo
-    const telefoneAntigo = await Telefone.findByPk(telefoneAtual.telefoneId);
-    await telefoneAntigo.destroy({ transaction: this.tr });
+      // Remover telefone antigo
+      const telefoneAntigo = await Telefone.findByPk(telefoneAtual.telefoneId);
+      await telefoneAntigo.destroy({ transaction: this.tr });
+    }
 
     // Registrar um novo telefone
     const telefoneNovo = await Telefone.create({
@@ -61,9 +63,11 @@ class HelperPessoa extends Helper {
       telefoneId: telefoneNovo.id
     }, { transaction: this.tr });
 
-    pessoaTelefoneId = relacionamentoNovo.id;
+    return {
+      telefoneId: telefoneNovo.id,
+      pessoaTelefoneId: relacionamentoNovo.id
+    }
 
-    return pessoaTelefoneId;
   }
 }
 
