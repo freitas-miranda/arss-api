@@ -4,8 +4,6 @@ import HelperPessoa from "@helpers/pessoa";
 import { grupo } from "@models/opcao_item";
 import Paciente from "@models/paciente";
 import Pessoa from "@models/pessoa";
-import PessoaTelefone from "@models/pessoa_telefone";
-import Telefone from "@models/telefone";
 import { Request, Response } from "express";
 import validate from "validate.js";
 
@@ -105,6 +103,7 @@ export class PacienteController extends Controller {
     try {
       const sql: string = `
         SELECT paciente.id
+             , pessoa.id as pessoaId
              , pessoa.cpf
              , pessoa.nome
              , pessoa.data_nascimento as dataNascimento
@@ -163,7 +162,6 @@ export class PacienteController extends Controller {
       const erro = validate(req.body, this.validacaoSalvar);
       if (erro) return res.status(500).json({ erro });
 
-
       const existente = await Paciente.findOne({
         where: {
           "$pessoa.cpf$": req.body.cpf
@@ -202,6 +200,10 @@ export class PacienteController extends Controller {
         // Criar Pessoa
         if (pessoaExistente) {
           pessoaId = pessoaExistente.id;
+          pessoaExistente.nome = nome;
+          pessoaExistente.dataNascimento = dataNascimento;
+          pessoaExistente.sexo = sexo;
+          await pessoaExistente.save({ transaction: t });
         } else {
           const pessoa = await Pessoa.create({
             nome: nome,
@@ -249,6 +251,7 @@ export class PacienteController extends Controller {
       paciente.altura = req.body.altura;
 
       const pessoa = await Pessoa.findByPk(req.body.pessoaId);
+      console.log(pessoa);
       pessoa.nome = req.body.nome;
       pessoa.cpf = req.body.cpf;
       pessoa.dataNascimento = req.body.dataNascimento;
@@ -278,10 +281,7 @@ export class PacienteController extends Controller {
   async apagar (req: Request, res: Response): Promise<any> {
     try {
       const reg = await Paciente.findByPk(req.params.id);
-
-      if (!reg) {
-        this.erro.naoEncontradoParaApagar();
-      }
+      if (!reg) this.erro.naoEncontradoParaApagar();
 
       await reg.destroy();
 
