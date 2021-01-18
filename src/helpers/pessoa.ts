@@ -1,6 +1,8 @@
 import Helper from "@base/helper";
 import Email from "@models/email";
+import Endereco from "@models/endereco";
 import PessoaEmail from "@models/pessoa_email";
+import PessoaEndereco from "@models/pessoa_endereco";
 import PessoaTelefone from "@models/pessoa_telefone";
 import Telefone from "@models/telefone";
 
@@ -121,6 +123,74 @@ class HelperPessoa extends Helper {
     return {
       emailId: emailNovo.id,
       pessoaEmailId: relacionamentoNovo.id
+    };
+  }
+
+  private async enderecoAtual (pessoaEnderecoId: any): Promise<any> {
+    return this.dbOperacoes.selectRow(`
+      SELECT pessoa_endereco.id as relacionamentoId
+           , pessoa_endereco.endereco_id as enderecoId
+           , pessoa_endereco.pessoa_id as pessoaId
+           , endereco.logradouro
+           , endereco.numero
+           , endereco.bairro
+           , endereco.cep
+           , endereco.cidade
+           , endereco.uf
+        FROM pessoa_endereco
+       INNER JOIN endereco
+          ON endereco.deleted_at IS NULL
+         AND endereco.id = pessoa_endereco.endereco_id
+       WHERE pessoa_endereco.id = :pessoaEnderecoId;
+    `, {
+      replacements: {
+        pessoaEnderecoId: pessoaEnderecoId,
+    }});
+  }
+
+  async atualizarEndereco (endereco: any): Promise<any> {
+    if (!endereco.logradouro) return;
+
+    // Se já possui endereco cadastrado
+    if (endereco.pessoaEnderecoId) {
+      const enderecoAtual = await this.enderecoAtual(endereco.pessoaEnderecoId);
+
+      // Sem alteração no endereco!
+      if (enderecoAtual.logradouro == endereco.logradouro &&
+          enderecoAtual.numero == endereco.numero &&
+          enderecoAtual.bairro == endereco.bairro &&
+          enderecoAtual.cep == endereco.cep &&
+          enderecoAtual.cidade == endereco.cidade &&
+          enderecoAtual.uf == endereco.uf) return;
+
+      // Remover relacionamento antigo
+      const relacionamentoAntigo = await PessoaEndereco.findByPk(enderecoAtual.relacionamentoId);
+      await relacionamentoAntigo.destroy({ transaction: this.tr });
+
+      // Remover endereco antigo
+      const enderecoAntigo = await Endereco.findByPk(enderecoAtual.enderecoId);
+      await enderecoAntigo.destroy({ transaction: this.tr });
+    }
+
+    // Registrar um novo endereco
+    const enderecoNovo = await Endereco.create({
+      logradouro: endereco.logradouro,
+      numero: endereco.numero,
+      bairro: endereco.bairro,
+      cep: endereco.cep,
+      cidade: endereco.cidade,
+      uf: endereco.uf
+    }, { transaction: this.tr });
+
+    // Relacionar o novo endereco
+    const relacionamentoNovo =  await PessoaEndereco.create({
+      pessoaId: this.pessoaId,
+      enderecoId: enderecoNovo.id
+    }, { transaction: this.tr });
+
+    return {
+      enderecoId: enderecoNovo.id,
+      pessoaEnderecoId: relacionamentoNovo.id
     };
   }
 

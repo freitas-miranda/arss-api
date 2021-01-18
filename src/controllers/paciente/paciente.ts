@@ -112,12 +112,18 @@ export class PacienteController extends Controller {
              , paciente.tipo_sanguineo as tipoSanguineo
              , paciente.peso
              , paciente.altura
-             , pessoa_endereco.id as pessoaEnderecoId
              , pessoa_telefone.id as pessoaTelefoneId
              , CONCAT(telefone.ddd, telefone.numero) as telefoneNumero
              , telefone.tipo as telefoneTipo
              , pessoa_email.id as pessoaEmailId
              , email
+             , pessoa_endereco.id as pessoaEnderecoId
+             , endereco.logradouro as enderecoLogradouro
+             , endereco.numero as enderecoNumero
+             , endereco.bairro as enderecoBairro
+             , endereco.cep as enderecoCep
+             , endereco.cidade as enderecoCidade
+             , endereco.uf as enderecoUf
           FROM paciente
          INNER JOIN pessoa
             ON pessoa.id = paciente.pessoa_id
@@ -182,6 +188,7 @@ export class PacienteController extends Controller {
       const cpf = req.body.cpf;
       const dataNascimento = req.body.dataNascimento;
       const sexo = req.body.sexo;
+      const endereco = req.body.endereco;
       const telefone = req.body.telefone;
       const email = req.body.email;
 
@@ -189,7 +196,9 @@ export class PacienteController extends Controller {
       delete req.body.cpf;
       delete req.body.dataNascimento;
       delete req.body.sexo;
+      delete req.body.endereco;
       delete req.body.telefone;
+      delete req.body.email;
 
       const pessoaExistente = await Pessoa.findOne({
         where: {
@@ -226,7 +235,7 @@ export class PacienteController extends Controller {
         pacienteId = reg.id;
 
         const helper = new HelperPessoa(pessoaId, t);
-        // helper.atualizarEndereco(endereco);
+        await helper.atualizarEndereco(endereco);
         await helper.atualizarTelefone(telefone);
         await helper.atualizarEmail(email);
       });
@@ -247,8 +256,6 @@ export class PacienteController extends Controller {
       const erro = validate(req.body, this.validacaoEditar);
       if (erro) return res.status(500).json({ erro });
 
-      console.log(req.body);
-
       const paciente = await Paciente.findByPk(req.body.id);
       if (!paciente) this.erro.naoEncontradoParaEditar();
       paciente.cartaoSus = req.body.cartaoSus;
@@ -267,7 +274,7 @@ export class PacienteController extends Controller {
         await pessoa.save({ transaction: t });
 
         const helper = new HelperPessoa(pessoa.id, t);
-        // await helper.atualizarEndereco(req.body.telefone);
+        await helper.atualizarEndereco(req.body.endereco);
         await helper.atualizarTelefone(req.body.telefone);
         await helper.atualizarEmail(req.body.email);
       });
