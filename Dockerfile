@@ -1,19 +1,10 @@
-FROM node:10
+FROM node:12
 
-WORKDIR /home/arss-api
-
-COPY package*.json ./
-COPY yarn.lock ./
-
-COPY .npmrc ./
-COPY .yarnrc ./
-
-RUN yarn
+WORKDIR /deploy
 
 COPY . .
 
+RUN yarn
 RUN yarn build
-
-EXPOSE 4400
 
 CMD [ "yarn", "start" ]
