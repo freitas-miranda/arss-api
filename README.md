@@ -33,7 +33,7 @@ ssh root@www.arss.link
 cd /servidores
 
 # Clonar o repositório
-git clone -b master --single-branch --no-tags git@github.com:freitas-miranda/arss-api.git
+git clone -b main --single-branch --no-tags git@github.com:freitas-miranda/arss-api.git
 
 # Entrar no repositório
 cd arss-api/
