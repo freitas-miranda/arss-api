@@ -24,55 +24,39 @@ yarn && yarn lint && yarn build-win
 yarn dev
 ```
 
-## Gerar a Imagem Docker
-```bash
-# Subir o serviço do docker na máquina de desenvolvimento
-
-# Buildar o projeto
-yarn && yarn lint && yarn build-win
-
-# Remover a imagem antiga
-docker images
-docker image rm freitasmiranda/arss-api
-
-# Gerar a imagem docker (Deve ser o .env de produção)
-docker build -t freitasmiranda/arss-api .
-
-# Fazer login docker
-docker login || docker logout
-
-# Enviar a imagem para DockerHub
-docker push freitasmiranda/arss-api
-
-```
-
-## Subir a Imagem Docker
+## Implantação
 ```bash
 # Acessar a VM de produção
 ssh root@www.arss.link
 
-# Fazer login docker
-docker login
+# Ir para servidores
+cd /servidores
 
-# Baixar imagem
-docker pull freitasmiranda/arss-api
+# Clonar o repositório
+git clone -b master --single-branch --no-tags git@github.com:freitas-miranda/arss-api.git
 
-# Subir container
-docker run --name ARSS_API_C1 --restart always -p 3000:80 -e TZ=America/Porto_Velho -d freitasmiranda/arss-api
+# Entrar no repositório
+cd arss-api/
 
-# Lista de containers
-docker container ls -a
+# Configurar o ambiente
+vi .env
 
-# Parar o container
-docker container stop ARSS_API_C1
+# Buildar a aplicação
+yarn && yarn build
 
-# Excluír todos containers parados
-docker container prune
+# Subir o serviço
+pm2 start ecosystem.config.js --env production
 
-# Lista das imagens
-docker images
+# Salvar configuração do PM2
+pm2 startup && pm2 save
 
-# Excluír imagens
-docker image rm freitasmiranda/arss-api
+# Reiniciar o serviço
+pm2 reload arss-api --update-env
+
+# Parar o serviço
+pm2 stop arss-api
+
+# Deletar o serviço
+pm2 delete arss-api
 
 ```
