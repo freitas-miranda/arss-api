@@ -11,7 +11,9 @@ export const enum grupo {
   simNao = 1,
   sexo = 2,
   tipoSanguineo = 3,
-  tipoTelefone = 4
+  tipoTelefone = 4,
+  tipoAgendamento = 5,
+  statusAgendamento = 6
 }
 
 @Table({ tableName: "opcao_item" })

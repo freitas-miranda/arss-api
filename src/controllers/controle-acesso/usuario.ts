@@ -29,9 +29,6 @@ export class UsuarioController extends Controller {
       },
       ativo: {
         presence: {allowEmpty: false, message: "não informado!"}
-      },
-      perfilAcessoId: {
-        presence: {allowEmpty: false, message: "^Perfil não informado!"}
       }
     };
 
@@ -135,7 +132,10 @@ export class UsuarioController extends Controller {
         throw new Error("Já existe um usuário cadastrado com o email informado!");
       }
 
-      const reg = await Usuario.create(req.body);
+      const reg = await Usuario.create(
+        // Criar o usuário como paciente, perfil 4;
+        Object.assign(req.body, {perfilAcessoId: 4}),
+      );
 
       return res.json({
         id: reg.id,

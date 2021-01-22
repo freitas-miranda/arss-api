@@ -30,6 +30,10 @@ class HelperErros {
   public naoEncontradoParaApagar () {
     throw new ErrorValidation (this.msg.naoEncontradoParaApagar());
   }
+
+  public create (msg: string) {
+    throw new ErrorValidation (msg);
+  }
 }
 export default HelperErros;
 
