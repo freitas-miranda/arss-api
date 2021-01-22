@@ -63,7 +63,7 @@ export class AgendamentoController extends Controller {
     try {
       let sql: string = `
         select a.id
-             , oStatus.descricao as status
+             , oStatus.descricao as statusPaciente
              , oTipo.descricao as tipo
              , a.dia
              , a.hora
@@ -109,14 +109,15 @@ export class AgendamentoController extends Controller {
     try {
       const sql: string = `
         select a.id
-             , oStatus.descricao as status
+             , oStatus.descricao as statusPaciente
              , oTipo.descricao as tipo
              , a.dia
              , a.hora
-             , pPaciente.nome as agendamento
+             , pPaciente.nome as paciente
              , CONCAT(telefone.ddd, telefone.numero) as telefonePaciente
              , pMedico.nome as medico
              , e.descricao as especialidade
+             , a.observacao
           from agendamento a
          inner join opcao_item oTipo
             on oTipo.opcao_id = 5 -- Tipo Agendamento
