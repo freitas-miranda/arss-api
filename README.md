@@ -50,6 +50,18 @@ pm2 start ecosystem.config.js --env production
 # Salvar configuração do PM2
 pm2 startup && pm2 save
 
+```
+
+## Atualização
+```bash
+# Fazer o merge na main
+
+# Ir para servidores
+cd /servidores/arss-api
+
+# Atualizar arquivos
+git pull
+
 # Reiniciar o serviço
 pm2 reload arss-api --update-env
 
