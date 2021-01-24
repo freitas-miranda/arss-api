@@ -157,6 +157,7 @@ class AutenticacaoController extends Controller {
       usuario.email = solicitacao.email;
       usuario.senha = req.body.senha;
       usuario.ativo = UsuarioAtivo.Sim;
+      usuario.perfilAcessoId = 4; // Criar o usuário como paciente, perfil 4;
 
       await this.db().transaction (async (t: any) => {
         await usuario.save({ transaction: t });

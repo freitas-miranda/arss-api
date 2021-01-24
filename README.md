@@ -62,6 +62,9 @@ cd /servidores/arss-api
 # Atualizar arquivos
 git pull
 
+# Buildar a aplicação
+yarn && yarn build
+
 # Reiniciar o serviço
 pm2 reload arss-api --update-env
 
