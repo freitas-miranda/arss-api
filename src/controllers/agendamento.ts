@@ -63,7 +63,8 @@ export class AgendamentoController extends Controller {
     try {
       let sql: string = `
         select a.id
-             , oStatus.descricao as statusPaciente
+             , a.status as statusId
+             , oStatus.descricao as statusAgendamento
              , oTipo.descricao as tipo
              , a.dia
              , a.hora
@@ -109,7 +110,8 @@ export class AgendamentoController extends Controller {
     try {
       const sql: string = `
         select a.id
-             , oStatus.descricao as statusPaciente
+             , a.status as statusId
+             , oStatus.descricao as statusAgendamento
              , oTipo.descricao as tipo
              , a.dia
              , a.hora
@@ -199,6 +201,7 @@ export class AgendamentoController extends Controller {
         this.erro.create(`Agendamento não encontrado para cancelar! Id: ${req.body.id}`);
       }
       agendamento.status = 5; // 5-Cancelado
+      agendamento.observacao = req.body.motivo;
       agendamento.confirmacao = null;
       agendamento.responsavel = null;
 
@@ -207,6 +210,33 @@ export class AgendamentoController extends Controller {
       return res.json({
         id: agendamento.id,
         mensagem: "Cancelado com sucesso!"
+      });
+    } catch (e) {
+      return res.status(500).json({ erro: e.message });
+    }
+  }
+
+  @Authentication()
+  @Put("/iniciar")
+  async iniciar (req: Request, res: Response): Promise<any> {
+    try {
+      const erro = validate(req.body, this.validacaoConfirmar);
+      if (erro) return res.status(500).json({ erro });
+
+      const agendamento = await Agendamento.findByPk(req.body.id);
+      if (!agendamento) {
+        this.erro.create(`Agendamento não encontrado para voltar ao inicio! Id: ${req.body.id}`);
+      }
+      agendamento.status = 1; // 1-Solicitado
+      agendamento.confirmacao = null;
+      agendamento.responsavel = null;
+      agendamento.observacao = null;
+
+      await agendamento.save();
+
+      return res.json({
+        id: agendamento.id,
+        mensagem: "Confirmado com sucesso!"
       });
     } catch (e) {
       return res.status(500).json({ erro: e.message });
