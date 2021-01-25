@@ -56,6 +56,9 @@ pm2 startup && pm2 save
 ```bash
 # Fazer o merge na main
 
+# Acessar a vm de produção
+ssh root@arss.link
+
 # Ir para servidores
 cd /servidores/arss-api
 

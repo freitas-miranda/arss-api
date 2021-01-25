@@ -132,10 +132,15 @@ export class UsuarioController extends Controller {
         throw new Error("Já existe um usuário cadastrado com o email informado!");
       }
 
-      const reg = await Usuario.create(
-        // Criar o usuário como paciente, perfil 4;
-        Object.assign(req.body, {perfilAcessoId: 4}),
-      );
+      const novoUsuario = {
+        nome: req.body.nome,
+        email: req.body.email,
+        senha: req.body.senha,
+        ativo: req.body.ativo,
+        perfilAcessoId: req.body.perfilAcessoId || 4 // 4-Paciente
+      }
+
+      const reg = await Usuario.create(novoUsuario);
 
       return res.json({
         id: reg.id,
