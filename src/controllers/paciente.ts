@@ -55,19 +55,24 @@ export class PacienteController extends Controller {
     }
   }
 
-  private async filtroPesquisa (params: any): Promise<string> {
-    params = params || { };
-    let sql: string = ``;
-    if (params.codigo) sql += ` AND paciente.id = ${params.codigo}`;
-    if (params.nome) sql += ` AND pessoa.nome LIKE '%${params.nome}%'`;
-    if (params.cpf) sql += ` AND pessoa.cpf = ${params.cpf}`;
-    return sql;
-  }
-
   @Authentication()
   @Get("/listar")
   async listar (req: Request, res: Response): Promise<any> {
     try {
+      const params = req.query || { };
+      let filtro: string = ``;
+      let order: string = ` ORDER BY paciente.id DESC`;
+      if (params.codigo) {
+        filtro += ` AND paciente.id = ${params.codigo}`;
+      }
+      if (params.nome) {
+        filtro += ` AND pessoa.nome LIKE '%${params.nome}%'`;
+        order = ` ORDER BY pessoa.nome`;
+      }
+      if (params.cpf) {
+        filtro += ` AND pessoa.cpf = ${params.cpf}`;
+      }
+
       let sql: string = `
         SELECT paciente.id
              , pessoa.cpf
@@ -83,15 +88,43 @@ export class PacienteController extends Controller {
           LEFT JOIN telefone
             ON telefone.id = pessoa_telefone.telefone_id
 
-         WHERE paciente.deleted_at IS NULL`;
+         WHERE paciente.deleted_at IS NULL
+         ${filtro}
+         ${order}`;
 
-      sql += await this.filtroPesquisa(req.query);
-
-      sql += ` GROUP BY pessoa.nome  LIMIT 1000`;
-
-      const registros = await this.select(sql);
+      const registros = await this.select(sql += " LIMIT 1000" );
 
       return res.json({registros: registros});
+    } catch (e) {
+      return res.status(500).json({ erro: e.message });
+    }
+  }
+
+  @Get("/existe/:cpf")
+  async existe (req: Request, res: Response): Promise<any> {
+    try {
+      const registro = await this.select(`
+        SELECT pessoa.cpf
+             , pessoa.nome
+          FROM pessoa
+         INNER JOIN paciente
+            ON paciente.pessoa_id = pessoa.id
+         WHERE paciente.deleted_at IS NULL
+           AND pessoa.cpf = :cpf
+      `, {
+        plain: true,
+        replacements: {
+          cpf: req.params.cpf
+        }
+      });
+
+      if (!validate.isEmpty(registro)) {
+        return res.json({
+          erro: `Já existe paciente cadastrado com este CPF <li>${registro.nome}</li>`
+        });
+      }
+
+      return res.json({"situacao": "Paciente não existe!"});
     } catch (e) {
       return res.status(500).json({ erro: e.message });
     }
@@ -181,7 +214,7 @@ export class PacienteController extends Controller {
       });
 
       if (existente) {
-        throw new Error("Já existe um paciente cadastrado com o CPF informado!");
+        throw new Error(`Já existe paciente cadastrado com este CPF <li>${existente.pessoa.nome}</li>`);
       }
 
       const nome = req.body.nome;
