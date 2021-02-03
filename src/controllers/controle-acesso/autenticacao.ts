@@ -255,7 +255,11 @@ class AutenticacaoController extends Controller {
         this.formatarIp(req.ip),
         <string>req.headers["user-agent"]);
 
-      return res.json({ token, nome: usuario.nome });
+      return res.json({
+        token,
+        nome: usuario.nome,
+        perfil: usuario.perfilAcessoId
+      });
     } catch (e) {
       return res.json({ erro: e.message || e });
     }
