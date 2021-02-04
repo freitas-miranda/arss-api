@@ -15,7 +15,9 @@ git clone -b develop git@github.com:freitas-miranda/arss-api.git
 cd arss-api
 
 # Configure o ambiente
+# Já possui acesso a um banco de desenvolvimento
 cp .env.example .env
+
 
 # Buildar o projeto
 yarn && yarn lint && yarn build-win
@@ -58,5 +60,24 @@ pm2 stop arss-api
 
 # Deletar o serviço
 pm2 delete arss-api
+
+```
+
+## Versionamento
+```bash
+# Acessar a VM de produção
+ssh root@www.arss.link
+
+# Ir para servidores
+cd /servidores/arss-api
+
+# Atualizar o repositório
+git pull
+
+# Buildar a aplicação
+yarn && yarn build
+
+# Reiniciar o serviço
+pm2 reload arss-api --update-env
 
 ```
