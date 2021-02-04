@@ -84,6 +84,15 @@ export class Controller extends BaseController {
     return query;
   }
 
+  protected async selectRow (sql: string, opcoes: any = { }): Promise<any> {
+    const query = await this.db().query(sql, {
+      type: QueryTypes.SELECT,
+      plain: true,
+      ...opcoes
+    });
+    return query;
+  }
+
   protected async opcoes (opcaoId: number): Promise<any> {
     return  Opcoes.findAll({
       attributes: ["codigo", "descricao"],

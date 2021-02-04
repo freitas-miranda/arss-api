@@ -182,7 +182,7 @@ export class AgendamentoController extends Controller {
 
       return res.json({
         id: agendamento.id,
-        mensagem: "Confirmado com sucesso!"
+        mensagem: "Agendamento confirmado!"
       });
     } catch (e) {
       return res.status(500).json({ erro: e.message });
@@ -198,7 +198,7 @@ export class AgendamentoController extends Controller {
 
       const agendamento = await Agendamento.findByPk(req.body.id);
       if (!agendamento) {
-        this.erro.create(`Agendamento não encontrado para cancelar! Id: ${req.body.id}`);
+        this.erro.create(`Agendamento não encontrado para recusar! Id: ${req.body.id}`);
       }
       agendamento.status = 5; // 5-Cancelado
       agendamento.observacao = req.body.motivo;
@@ -209,7 +209,7 @@ export class AgendamentoController extends Controller {
 
       return res.json({
         id: agendamento.id,
-        mensagem: "Cancelado com sucesso!"
+        mensagem: "Agendamento recusado!"
       });
     } catch (e) {
       return res.status(500).json({ erro: e.message });
@@ -236,7 +236,7 @@ export class AgendamentoController extends Controller {
 
       return res.json({
         id: agendamento.id,
-        mensagem: "Confirmado com sucesso!"
+        mensagem: "Status alterado para solicitado!"
       });
     } catch (e) {
       return res.status(500).json({ erro: e.message });
