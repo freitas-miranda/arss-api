@@ -26,7 +26,7 @@ class HelperMensagens {
   }
 
   public sucessoAoSalvar (): string {
-    return "Registrado com sucesso!";
+    return "Adicionado com sucesso!";
   }
 
   public sucessoAoEditar (): string {
