@@ -8,7 +8,7 @@
 
 ## Desenvolvimento
 ```bash
-# Clonar o repositório
+# Clonar o ou fazer o download do repositório
 git clone -b develop git@github.com:freitas-miranda/arss-api.git
 
 # Entre no diretório raiz
