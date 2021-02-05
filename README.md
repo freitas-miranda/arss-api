@@ -18,9 +18,8 @@ cd arss-api
 # Já possui acesso a um banco de desenvolvimento
 cp .env.example .env
 
-
 # Buildar o projeto
-yarn && yarn lint && yarn build-win
+yarn && yarn lint && yarn build
 
 # Subir o servidor
 yarn dev
