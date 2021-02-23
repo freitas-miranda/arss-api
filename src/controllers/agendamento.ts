@@ -3,6 +3,7 @@ import { Auth } from "@core/access_control";
 import { Authentication, Get, Put, Route } from "@core/routing/controller";
 import Agendamento from "@models/agendamento";
 import { grupo } from "@models/opcao_item";
+import { PerfilAcesso } from "@models/perfil";
 import { Request, Response } from "express";
 import moment from "moment";
 import validate from "validate.js";
@@ -46,6 +47,10 @@ export class AgendamentoController extends Controller {
     }
   }
 
+  private usuarioPaciente (): boolean {
+    return (Auth.user.perfilAcessoId === PerfilAcesso.Paciente);
+  }
+
   private async filtroPesquisa (params: any): Promise<string> {
     params = params || { };
     let sql: string = ``;
@@ -54,6 +59,11 @@ export class AgendamentoController extends Controller {
     if (params.statusAgendamento) sql += ` and a.status = ${params.statusAgendamento}`;
     if (params.paciente) sql += ` and pPaciente.nome like '%${params.paciente}%'`;
     if (params.medico) sql += ` and pMedico.nome like '%${params.medico}%'`;
+
+    if (this.usuarioPaciente()) {
+      sql += ` and usuario.id = ${Auth.user.id}`;
+    }
+
     return sql;
   }
 
@@ -90,6 +100,9 @@ export class AgendamentoController extends Controller {
             on medico.profissional_saude_id = ps.id
          inner join pessoa pMedico
             on ps.pessoa_id = pMedico.id
+          left join usuario
+            on usuario.deleted_at is null
+           and usuario.id = pPaciente.usuario_id
          where a.deleted_at is null`;
 
       sql += await this.filtroPesquisa(req.query);
@@ -108,7 +121,7 @@ export class AgendamentoController extends Controller {
   @Get("/exibir/:id")
   async exibir (req: Request, res: Response): Promise<any> {
     try {
-      const sql: string = `
+      let sql: string = `
         select a.id
              , a.status as statusId
              , oStatus.descricao as statusAgendamento
@@ -144,7 +157,14 @@ export class AgendamentoController extends Controller {
            and pt.pessoa_id = pPaciente.id
           left join telefone
             on telefone.id = pt.telefone_id
+          left join usuario
+            on usuario.deleted_at is null
+           and usuario.id = pPaciente.usuario_id
          where a.id = :id`;
+
+      if (this.usuarioPaciente()) {
+        sql += ` and usuario.id = ${Auth.user.id}`;
+      }
 
       const registro = await this.select(sql, {
         plain: true,

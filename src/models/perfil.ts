@@ -8,6 +8,13 @@ import {
   Table
 } from "sequelize-typescript";
 
+export const enum PerfilAcesso {
+  Admin = 1,
+  Gestor = 2,
+  Atendente = 3,
+  Paciente = 4
+}
+
 @Table({ tableName: "perfil_acesso" })
 class Perfil extends Model<Perfil> {
 

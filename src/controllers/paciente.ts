@@ -135,7 +135,7 @@ export class PacienteController extends Controller {
   async exibir (req: Request, res: Response): Promise<any> {
     try {
       const sql: string = `
-        SELECT paciente.id
+        select paciente.id
              , pessoa.id as pessoaId
              , pessoa.cpf
              , pessoa.nome
@@ -157,28 +157,28 @@ export class PacienteController extends Controller {
              , endereco.cep as enderecoCep
              , endereco.cidade as enderecoCidade
              , endereco.uf as enderecoUf
-          FROM paciente
-         INNER JOIN pessoa
-            ON pessoa.id = paciente.pessoa_id
+          from paciente
+         inner join pessoa
+            on pessoa.id = paciente.pessoa_id
 
-          LEFT JOIN pessoa_endereco
-            ON pessoa_endereco.deleted_at IS NULL
-           AND pessoa_endereco.pessoa_id = pessoa.id
-          LEFT JOIN endereco
-            ON endereco.id = pessoa_endereco.endereco_id
+          left join pessoa_endereco
+            on pessoa_endereco.deleted_at is null
+           and pessoa_endereco.pessoa_id = pessoa.id
+          left join endereco
+            on endereco.id = pessoa_endereco.endereco_id
 
-          LEFT JOIN pessoa_telefone
-            ON pessoa_telefone.deleted_at IS NULL
-           AND pessoa_telefone.pessoa_id = pessoa.id
-          LEFT JOIN telefone
-            ON telefone.id = pessoa_telefone.telefone_id
+          left join pessoa_telefone
+            on pessoa_telefone.deleted_at is null
+           and pessoa_telefone.pessoa_id = pessoa.id
+          left join telefone
+            on telefone.id = pessoa_telefone.telefone_id
 
-          LEFT JOIN pessoa_email
-            ON pessoa_email.deleted_at IS NULL
-           AND pessoa_email.pessoa_id = pessoa.id
-          LEFT JOIN email
-            ON email.id = pessoa_email.email_id
-         WHERE paciente.id = :id`;
+          left join pessoa_email
+            on pessoa_email.deleted_at is null
+           and pessoa_email.pessoa_id = pessoa.id
+          left join email
+            on email.id = pessoa_email.email_id
+         where paciente.id = :id`;
 
       const registro = await this.select(sql, {
         plain: true,

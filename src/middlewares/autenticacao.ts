@@ -25,6 +25,7 @@ passport.use(new Strategy(
         email: usuario.email,
         nome: usuario.nome,
         token: token,
+        perfilAcessoId: usuario.perfilAcessoId
       });
     } catch (e) {
       return cb(e);

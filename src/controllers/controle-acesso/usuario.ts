@@ -138,7 +138,7 @@ export class UsuarioController extends Controller {
         senha: req.body.senha,
         ativo: req.body.ativo,
         perfilAcessoId: req.body.perfilAcessoId || 4 // 4-Paciente
-      }
+      };
 
       const reg = await Usuario.create(novoUsuario);
 
